@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String         @id @default(uuid())
+  username  String         @unique
+  email     String         @unique
+  password  String
+  createdAt DateTime       @default(now())
+
+  stories   Story[]        @relation("UserStories")
+  parts     StoryPart[]
+
+  participations Participation[]
+  comments     Comment[]
+  likes        Like[]
+}
+
+
+model Story {
+  id          String      @id @default(uuid())
+  title       String
+  description String?
+  isPublic    Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  createdBy   String
+  author      User         @relation("UserStories", fields: [createdBy], references: [id])
+  parts       StoryPart[]
+  participants Participation[]
+}
+
+model StoryPart {
+  id        String   @id @default(uuid())
+  story     Story    @relation(fields: [storyId], references: [id])
+  storyId   String
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+  content   String
+  order     Int
+  createdAt DateTime @default(now())
+  comments  Comment[]
+  likes     Like[]
+}
+
+model Participation {
+  id         String   @id @default(uuid())
+  story      Story    @relation(fields: [storyId], references: [id])
+  storyId    String
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  turnOrder  Int
+  isDone     Boolean  @default(false)
+}
+
+model Comment {
+  id         String   @id @default(uuid())
+  content    String
+  createdAt  DateTime @default(now())
+  part       StoryPart @relation(fields: [partId], references: [id])
+  partId     String
+  author     User     @relation(fields: [authorId], references: [id])
+  authorId   String
+}
+
+model Like {
+  id        String   @id @default(uuid())
+  part      StoryPart @relation(fields: [partId], references: [id])
+  partId    String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+}
