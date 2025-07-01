@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 app.use("/api/auth", authRouter);
-app.use("/api/story", storyRouter);
+app.use("/api/stories", storyRouter);
 
 app.get("/", (req: Request, res: Response) => {
     res.send("📚 Relay Novel API is running!");
