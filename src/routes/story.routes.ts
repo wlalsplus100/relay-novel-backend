@@ -7,10 +7,10 @@ import {
 import { authenticate } from "../middlewares/auth";
 import { asyncHandler } from "../utils/asyncHandler";
 
-const router = express.Router();
+const storyRouter = express.Router();
 
-router.post("/", authenticate, asyncHandler(createStory));
-router.get("/", asyncHandler(getStories));
-router.get("/:id", asyncHandler(getStoryById));
+storyRouter.post("/", authenticate, asyncHandler(createStory));
+storyRouter.get("/", asyncHandler(getStories));
+storyRouter.get("/:id", asyncHandler(getStoryById));
 
-export default router;
+export default storyRouter;
