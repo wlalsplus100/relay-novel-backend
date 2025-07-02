@@ -43,8 +43,27 @@ export const createPart = async (req: Request, res: Response) => {
 
     await prisma.participation.update({
         where: { id: participation.id },
-        data: { isDone: true }
+        data: { isDone: true, turnGivenAt: null }
     });
+
+    const next = await prisma.participation.findFirst({
+        where: {
+            storyId,
+            isDone: false,
+            isSkipped: false,
+            turnGivenAt: null
+        },
+        orderBy: { turnOrder: "asc" }
+    });
+
+    if (next) {
+        await prisma.participation.update({
+            where: { id: next.id },
+            data: {
+                turnGivenAt: new Date()
+            }
+        });
+    }
 
     res.status(201).json({ message: "이어쓰기 성공", part });
 };
