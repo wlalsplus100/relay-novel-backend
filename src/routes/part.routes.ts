@@ -7,10 +7,10 @@ import {
     getPartByOrder
 } from "../controllers/part.controller";
 
-const router = express.Router();
+const partRouter = express.Router();
 
-router.post("/:id/parts", authenticate, asyncHandler(createPart));
-router.get("/:id/parts", asyncHandler(getParts));
-router.get("/:id/parts/:order", asyncHandler(getPartByOrder));
+partRouter.post("/:id/parts", authenticate, asyncHandler(createPart));
+partRouter.get("/:id/parts", asyncHandler(getParts));
+partRouter.get("/:id/parts/:order", asyncHandler(getPartByOrder));
 
-export default router;
+export default partRouter;
