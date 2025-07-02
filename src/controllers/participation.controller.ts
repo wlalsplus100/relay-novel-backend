@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/prisma";
+import { updateExpiredTurns } from "../utils/turnManager";
 
 export const participate = async (req: Request, res: Response) => {
     const { id: storyId } = req.params;
@@ -45,6 +46,8 @@ export const getParticipants = async (req: Request, res: Response) => {
 
 export const getCurrentTurnUser = async (req: Request, res: Response) => {
     const { id: storyId } = req.params;
+
+    await updateExpiredTurns(storyId);
 
     const nextUser = await prisma.participation.findFirst({
         where: {
