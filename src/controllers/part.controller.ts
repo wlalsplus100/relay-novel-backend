@@ -9,6 +9,27 @@ export const createPart = async (req: Request, res: Response) => {
     const story = await prisma.story.findUnique({ where: { id: storyId } });
     if (!story) return res.status(404).json({ message: "소설이 없어요" });
 
+    const participation = await prisma.participation.findFirst({
+        where: { storyId, userId: user.id }
+    });
+
+    if (!participation) {
+        return res.status(403).json({ message: "참여하지 않았어요" });
+    }
+
+    if (participation.isDone) {
+        return res.status(403).json({ message: "이미 썼어요" });
+    }
+
+    const currentTurn = await prisma.participation.findFirst({
+        where: { storyId, isDone: false },
+        orderBy: { turnOrder: "asc" }
+    });
+
+    if (currentTurn?.userId !== user.id) {
+        return res.status(403).json({ message: "지금은 차례가 아니에요" });
+    }
+
     const existingParts = await prisma.storyPart.count({ where: { storyId } });
 
     const part = await prisma.storyPart.create({
@@ -18,6 +39,11 @@ export const createPart = async (req: Request, res: Response) => {
             content,
             order: existingParts + 1
         }
+    });
+
+    await prisma.participation.update({
+        where: { id: participation.id },
+        data: { isDone: true }
     });
 
     res.status(201).json({ message: "이어쓰기 성공", part });
