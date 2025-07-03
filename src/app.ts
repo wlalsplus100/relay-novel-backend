@@ -4,6 +4,7 @@ import morgan from "morgan";
 import authRouter from "./routes/auth.routes";
 import storyRouter from "./routes/story.routes";
 import partRouter from "./routes/part.routes";
+import { participationRouter } from "./routes/participation.routes";
 
 const app: Application = express();
 
@@ -13,6 +14,7 @@ app.use(morgan("dev"));
 app.use("/api/auth", authRouter);
 app.use("/api/stories", storyRouter);
 app.use("/api/stories", partRouter);
+app.use("/api/stories", participationRouter);
 
 app.get("/", (req: Request, res: Response) => {
     res.send("📚 Relay Novel API is running!");

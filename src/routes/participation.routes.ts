@@ -7,7 +7,7 @@ import {
     getCurrentTurnUser
 } from "../controllers/participation.controller";
 
-const participationRouter = express.Router();
+export const participationRouter = express.Router();
 
 participationRouter.post(
     "/:id/participate",
